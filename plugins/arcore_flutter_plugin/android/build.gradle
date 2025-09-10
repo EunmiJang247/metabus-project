@@ -1,0 +1,51 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    namespace "com.difrancescogianmarco.arcore_flutter_plugin"
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 24
+        consumerProguardFiles 'consumer-rules.pro'
+    }
+
+    // Sceneform(구글판) API와 호환 위해 Java 8로 유지
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+repositories {
+    google()
+    mavenCentral()
+}
+
+configurations.all {
+    resolutionStrategy {
+        // ★ 트랜зитив 의존성이 ARCore를 낮추는 걸 방지 (핵심!)
+        force 'com.google.ar:core:1.50.0'
+    }
+}
+
+dependencies {
+    // AndroidX 기본
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
+    // ★ 최신 ARCore (Android 14의 브로드캐스트 보안 요건 충족)
+    implementation 'com.google.ar:core:1.50.0'
+
+    // ★ 플러그인 소스가 기대하는 구글 Sceneform API (1.15.0이 마지막)
+    implementation 'com.google.ar.sceneform:core:1.15.0'
+    implementation 'com.google.ar.sceneform:assets:1.15.0'
+    implementation 'com.google.ar.sceneform.ux:sceneform-ux:1.15.0'
+
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+}
